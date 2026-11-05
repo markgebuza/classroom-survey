@@ -24,7 +24,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 2 — Supabase Project and Database
 
-- [ ] Create a Supabase project.
+- [x] Create a Supabase project.
 - [x] Create the `surveys` table.
 - [x] Create the `questions` table.
 - [x] Create the `choices` table.
@@ -35,12 +35,14 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Add timestamps.
 - [x] Add survey-status validation.
 - [x] Create Row Level Security policies.
-- [ ] Verify students cannot read survey results.
-- [ ] Verify anonymous students can read active surveys.
-- [ ] Verify anonymous students can submit responses.
-- [ ] Verify authenticated instructors have full access.
+- [x] Verify students cannot read survey results.
+- [x] Verify anonymous students can read active surveys.
+- [x] Verify anonymous students can submit responses.
+- [x] Verify authenticated instructors have full access.
 
 > Note (2026-11-02): the schema items above are checked because both migrations were executed and verified on PostgreSQL 18 (PGlite) locally. They still have to be applied to the Supabase project. The four "Verify" items stay unchecked until `supabase/tests/rls_checks.sql` is run in the Supabase SQL Editor and shows all PASS.
+
+> Note (2026-11-05): both migrations were applied to the Supabase project and `supabase/tests/rls_checks.sql` ran there with 23/23 PASS (run by the AI agent through the Supabase Management API). The "Verify" items are checked on that basis.
 
 ---
 
@@ -216,7 +218,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [ ] Test mobile layout.
 - [ ] Test with at least two browsers.
 - [ ] Test unauthorized access attempts.
-- [ ] Test database Row Level Security.
+- [x] Test database Row Level Security.
 
 ---
 

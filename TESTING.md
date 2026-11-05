@@ -40,8 +40,8 @@ Other automated checks run during development:
 
 | Test | Steps | Expected | Result | Notes |
 |---|---|---|---|---|
-| SQL RLS checks | Supabase → SQL Editor → paste `supabase/tests/rls_checks.sql` → Run | 23 rows, all `PASS`; no test surveys left afterwards; your active survey (if any) still active | | Screenshot 1 |
-| Anon API probe | `npx tsx scripts/rls-probe.ts` (uses `.env.local`, anon key only) | All checks `PASS`, exit code 0 | | |
+| SQL RLS checks | Supabase → SQL Editor → paste `supabase/tests/rls_checks.sql` → Run | 23 rows, all `PASS`; no test surveys left afterwards; your active survey (if any) still active | Pass | 2026-11-05: run by the AI agent through the Supabase Management API (23/23 PASS, 0 surveys/responses/answers left), then re-run by me in the SQL Editor: 23/23 PASS (Screenshot 1) |
+| Anon API probe | `npx tsx scripts/rls-probe.ts` (uses `.env.local`, anon key only) | All checks `PASS`, exit code 0 | Pass (agent) | 2026-11-05, run by the AI agent: 8 passed, 0 failed, 2 skipped (no active survey yet; the submit check needs `--submit`) |
 | Anon probe with submission | Activate a **test** survey, then `npx tsx scripts/rls-probe.ts --submit` | First submit PASS, second fails with `DUPLICATE_RESPONSE` → PASS. Creates one test response (delete the test survey afterwards) | | |
 
 ---
@@ -56,7 +56,7 @@ Use a real Supabase project with the migrations applied, public sign-ups disable
 | 2 | Instructor login (invalid) | Wrong password | "Incorrect email or password."; no raw error | | |
 | 3 | Protected routes | Logged out, open `/dashboard` and `/surveys/<id>/results` directly | Redirect to `/login`; after login you return to the page you asked for | | |
 | 4 | Logout | Click Logout, then press browser Back | Back on login; dashboard not accessible | | |
-| 5 | Sign-ups disabled | Supabase → Authentication → Providers/Sign In: "Allow new users to sign up" is off | Off | | |
+| 5 | Sign-ups disabled | Supabase → Authentication → Providers/Sign In: "Allow new users to sign up" is off | Off | Pass (agent) | 2026-11-05, set by the AI agent through the Management API (`disable_signup: true`); a sign-up attempt with the anon key returned 422 `signup_disabled` |
 | 6 | Survey creation stores it (DB) | New Survey → title "Test 1" → Save Draft. Supabase → Table Editor → `surveys` | A row with title "Test 1", status `draft` | | Screenshot 2 |
 | 7 | Adding questions creates records (DB) | Add 2 Multiple Choice (3 choices each) + 1 True/False question → Save Draft. Check `questions` and `choices` | 3 `questions` rows (positions 1–3, correct types); 8 `choices` rows; T/F has "True"(1) and "False"(2) | | Screenshot 2 |
 | 8 | Editor validation | Empty title / empty question / blank choice → Save Draft | Errors next to each field, first invalid field focused, nothing saved | | |
@@ -85,5 +85,5 @@ Use a real Supabase project with the migrations applied, public sign-ups disable
 | 31 | Two browsers | Repeat tests 1, 12, 17, 23 in two browsers (e.g. Chrome + Firefox/Safari) | Same behaviour | | |
 | 32 | Keyboard only | Tab through every page; use dialogs with keyboard; skip link | All controls reachable, visible focus ring, Escape closes dialogs, focus returns | | |
 | 33 | Unauthorized access attempts | Logged out: open `/dashboard`, `/surveys/<id>/results`; run `scripts/rls-probe.ts` | Redirect to login; probe all PASS (anon cannot read responses/answers, insert/update/delete surveys, read drafts, call results/activate RPCs) | | |
-| 34 | Database Row Level Security | Run `supabase/tests/rls_checks.sql` | All PASS | | Screenshot 1 |
+| 34 | Database Row Level Security | Run `supabase/tests/rls_checks.sql` | All PASS | Pass | 2026-11-05, 23/23 PASS on the live project, run by the agent and re-run by me in the SQL Editor (see section 2, Screenshot 1) |
 | 35 | Production smoke test (Prompt 14) | On the Cloudflare Pages URL: login, activate, scan QR, submit, results | Everything works on the production URL; QR points to production | | Do after deployment |

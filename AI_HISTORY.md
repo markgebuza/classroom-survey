@@ -569,3 +569,60 @@ git push -u origin main
 **Problems / fixes:** The publishable key is meant to be public (it ships in the frontend bundle, and RLS protects the data), so this is not a security leak. It does break project rule 3 and the README, which both say `.env.example` lists variable names only, and a grader checking for "no committed secrets" may flag it. Open: blank the values in `.env.example` with a new commit (the key stays in git history, which is acceptable for a publishable key; rewriting history would need a force-push to main).
 
 **Follow-up (same session):** I chose to clear the values. The agent blanked `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in `.env.example` and committed and pushed that together with these log entries. `.env.local` keeps the real values.
+
+---
+
+## Session 23 — 2026-11-05 — Supabase setup: sign-ups, migrations, RLS checks (TODO Phases 2 and 14)
+
+**What I asked:** "yes" (let the agent do steps 1–3: Supabase settings, migrations, RLS checks/probe), then gave a Supabase personal access token.
+
+**What the agent did:**
+- Saved the token to `C:\Users\mgebu\supabase-token.txt` (outside the repo) and used it only through the Supabase Management API. I pasted the token into the chat, so it must be revoked when setup is finished.
+- Turned off public sign-ups (`PATCH /config/auth`, `disable_signup: true`). Checked it: a sign-up request with the anon key returned 422 `signup_disabled`.
+- Ran `20261102000100_initial_schema.sql` and then `20261102000200_rpc_functions.sql` through the `database/query` endpoint. The database was empty before. Afterwards it has 5 tables, 7 functions and 8 RLS policies.
+- Ran `supabase/tests/rls_checks.sql`: 23/23 PASS. The script cleaned up after itself (0 surveys, responses and answers left).
+- Ran `npx tsx scripts/rls-probe.ts` with the anon key only: 8 passed, 0 failed, 2 skipped (no active survey yet; the submit check needs `--submit`).
+- Recorded the results in `TESTING.md` (marked "Pass (agent)") and checked off in `TODO.md`: Create a Supabase project, the four Phase 2 "Verify" items, and "Test database Row Level Security".
+
+**Files changed:** `TODO.md`, `TESTING.md`, `AI_HISTORY.md`. Database: schema and functions applied to project `tpdwyxoazhifwhmghfma`; auth setting `disable_signup` changed.
+
+**Verification:** rls_checks 23/23 PASS; probe 8/0/2; sign-up blocked (422).
+
+**Problems / open issues:**
+- The instructor and grader users are not created yet; waiting for the two email addresses.
+- Screenshot 1 (rls_checks in the SQL Editor) still has to be taken by me. Running the script again in the SQL Editor is safe because it cleans up after itself.
+- The SQL was run through the Management API instead of the SQL Editor or `supabase db push`, so the Supabase migration history table is empty. The schema still comes only from the migration files.
+
+---
+
+## Session 24 — 2026-11-05 — Create instructor and grader users
+
+**What I asked:** "mgebuza31@gmail.com and grader@example.com"
+
+**What the agent did:**
+- Created two pre-confirmed Supabase Auth users with the Auth admin API: instructor `mgebuza31@gmail.com` and grader `grader@example.com`. The script fetched the admin key in memory through the Management API; the key was never printed or written to disk.
+- Generated random 16-character passwords and saved both logins to `C:\Users\mgebu\survey-app-credentials.txt`, outside the repo.
+- Deleted `C:\Users\mgebu\supabase-token.txt`.
+
+**Files changed:** `AI_HISTORY.md`. Outside the repo: `survey-app-credentials.txt` created, `supabase-token.txt` deleted.
+
+**Verification:** Both accounts logged in through the password endpoint using only the anon key (HTTP 200, session returned). Not yet tested through the app's login page, so "Connect login to Supabase Auth" stays unchecked.
+
+**Problems / open issues:** I still need to revoke the `claude-setup` access token in Supabase (it was pasted into the chat). Changing the Supabase Site URL after deployment is now a dashboard step for me, because the agent no longer has the token.
+
+---
+
+## Session 25 — 2026-11-05 — rls_checks in the SQL Editor, commit
+
+**What I asked:** "how do i run rls_checks", then "all 23 passed, commit and push"
+
+**What the agent did:**
+- Copied `supabase/tests/rls_checks.sql` to my clipboard and gave me the SQL Editor steps. I ran it myself: 23/23 PASS.
+- Updated the two rls_checks rows in `TESTING.md` from "Pass (agent)" to "Pass", noting both runs.
+- Committed Sessions 23–25 (`TODO.md`, `TESTING.md`, `AI_HISTORY.md`) and pushed to `origin/main`.
+
+**Files changed:** `TESTING.md`, `AI_HISTORY.md` (plus the Session 23 changes to `TODO.md`).
+
+**Verification:** My SQL Editor run: 23/23 PASS. `git status` was clean and matched `origin/main` after the push.
+
+**Problems / open issues:** None.

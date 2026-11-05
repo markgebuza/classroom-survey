@@ -1,0 +1,14 @@
+---
+description: Classroom Survey Web App project rules
+alwaysApply: true
+---
+
+# Project rules
+
+1. The five Markdown files in the repo root (`Classroom_Survey_Web_App_Specification.md`, `TODO.md`, `DATABASE.md`, `API.md`, `UI.md`) are the source of truth. Follow them. If you must make a decision they don't cover, or deviate from them, record it in `DECISIONS.md` (date, decision, reason, alternatives).
+2. Stack: React + TypeScript + Vite + Tailwind CSS + React Router + `@supabase/supabase-js` + Recharts + `qrcode`. Hosting: Cloudflare Pages. DB: Supabase Postgres.
+3. Never commit secrets. Only `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` may be used in the frontend. The service-role key must never appear in code. `.env` files are git-ignored; `.env.example` lists variable names only.
+4. All schema changes go in timestamped SQL files in `supabase/migrations/`. Never rely on changes made only in the dashboard.
+5. After completing any task: (a) check it off in `TODO.md` only if it is implemented AND verified, (b) append a short entry to `AI_HISTORY.md`: date, what I asked, what you did, files changed, problems found and how they were fixed.
+6. Students must never see raw database errors. Map errors to the friendly messages in `UI.md`.
+7. Run `npm run build` and `npm run lint` after each change set and fix all errors before reporting done.

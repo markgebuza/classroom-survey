@@ -872,3 +872,26 @@ git push -u origin main
 **Verification:** Documentation only.
 
 **Problems / open issues:** The exact HuskyCT deliverables for this assignment are unconfirmed. I need to check the assignment page.
+
+---
+
+## Session 37 — 2026-11-05 — Check against the deliverables; evidence screenshots, shorter summary, README link
+
+**What I asked:** pasted the assignment's "Required Deliverables" (A–E), then "yes do all three, then commit and push"
+
+**What the agent did:**
+- Checked the repo against A–E:
+  - A (repo contents) and D (AI history) complete.
+  - B complete apart from submitting the URL and grader login on HuskyCT.
+  - C missing my reflections and about twice the 1–2 page length.
+  - E missing a screenshot of stored student responses.
+- **E:** in my logged-in Chrome, took Supabase Table Editor screenshots of `responses` (4 rows) and `answers` (12 rows). Closed a Supabase "Queue row edits" tip that covered the first one and retook both. Saved as `evidence-table-responses.jpg` and `evidence-table-answers.jpg` in `C:\Users\mgebu\Downloads\survey-app-screenshots\`. The screenshots contain only IDs, random browser tokens and timestamps, no credentials or personal data.
+- **C:** rewrote `DEVELOPMENT_SUMMARY.md` from about 1,600 to about 700 words, not counting the 5 `[MY REFLECTION]` placeholders, which were kept for me. All 7 required topics are still covered. The live and GitHub URLs are at the top. Section 5 now leads with the Excel CSV bug (Session 35). Test count updated to 125.
+- **README:** added the live app URL under the intro, linking to the Grader access section.
+- Committed and pushed.
+
+**Files changed:** `DEVELOPMENT_SUMMARY.md`, `README.md`, `AI_HISTORY.md`.
+
+**Verification:** `wc -w` on the summary without the placeholders: 701 words; `prettier --check` clean on both docs. No code changed.
+
+**Problems / open issues:** The 5 reflections are still mine to write; aim for about 300 words in total to stay near 2 pages. Still to do: the HuskyCT submission (A and B URLs, C, D, E screenshots, grader login).

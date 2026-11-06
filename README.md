@@ -4,6 +4,8 @@ A free, open-source web app for quick in-class understanding checks. The instruc
 
 Course project for CSE 4095. Built with an AI coding agent from five specification documents (see [Documentation](#documentation)).
 
+**Live app:** https://classroom-survey-cky.pages.dev (instructor login: see [Grader access](#grader-access))
+
 ---
 
 ## Features

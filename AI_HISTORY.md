@@ -675,3 +675,31 @@ git push -u origin main
 - Row 30 is only partial: instructor text inputs and selects are 41–42 px tall, and the header "Classroom Survey" link is 28 px, below the 44 px tap-target goal. Not fixed; that would be a small CSS change if I want it.
 - Not done (need me or my OK): real phone QR scan (15), QR download (16) and CSV export (29), because downloads need my approval; second browser (31); projector; rows 9, 11, 13 and 24–28.
 - "Test mobile layout" and "Test accessibility and keyboard navigation" are left unchecked in `TODO.md` because they need a real phone and the 44 px fix.
+
+---
+
+## Session 28 — 2026-11-05 — Commit, then the remaining Chrome tests
+
+**What I asked:** "commit and push then continue for next steps"
+
+**What the agent did:**
+- Committed and pushed the Session 26–27 results (`b023f5c`).
+- In Chrome:
+  - Editor validation (8).
+  - Created "Test 2", tested the unsaved-changes dialog (11), then edited and reordered it, saved, and reloaded (9).
+  - Edited the closed Fractions survey, which has responses: questions locked, description saved (26).
+  - Activated Fractions, then Test 2, to check that only one survey can be active (13).
+  - Submitted one student response to Test 2 and compared the results page with database counts, including Refresh (24).
+  - Closed and deleted Test 2 with its response (28).
+  - Duplicated the Fractions survey, then deleted the empty copy (27).
+  - Archived the Fractions survey and checked its results plus the status and date filters (25).
+- Filled 9 more `TESTING.md` rows ("Pass (agent)") and checked off "Test survey editing" and "Preserve all historical response data" in `TODO.md`.
+
+**Files changed:** `TESTING.md`, `TODO.md`, `AI_HISTORY.md`.
+
+**Verification:** Database query as the instructor matched the results page. Final data: one survey, "Test Survey - Fractions Check", archived, 3 responses. No code changed, so lint, tests and build were not re-run.
+
+**Problems / open issues:**
+- Row 11: the browser's own prompt on tab close was not tested, because a native dialog would block the automation.
+- Row 24 compared against a REST query, not the SQL Editor.
+- Still open: QR download (16) and CSV export (29) need my OK to download files; phone QR scan (15); a second browser (31); projector; the 41–42 px instructor inputs (row 30); deployment (Phase 15).

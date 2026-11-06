@@ -162,7 +162,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Allow viewing results for Archived surveys.
 - [x] Add filtering by date.
 - [x] Add filtering by survey title.
-- [ ] Preserve all historical response data.
+- [x] Preserve all historical response data.
 
 ---
 
@@ -207,7 +207,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 - [x] Test instructor login.
 - [x] Test survey creation.
-- [ ] Test survey editing.
+- [x] Test survey editing.
 - [x] Test activation.
 - [x] Test closing surveys.
 - [ ] Test QR-code links.

@@ -703,3 +703,43 @@ git push -u origin main
 - Row 11: the browser's own prompt on tab close was not tested, because a native dialog would block the automation.
 - Row 24 compared against a REST query, not the SQL Editor.
 - Still open: QR download (16) and CSV export (29) need my OK to download files; phone QR scan (15); a second browser (31); projector; the 41–42 px instructor inputs (row 30); deployment (Phase 15).
+
+---
+
+## Session 29 — 2026-11-05 — QR/CSV downloads and input height fix
+
+**What I asked:** "do the downloads and fix the input sizes"
+
+**What the agent did:**
+- `src/index.css`: added `min-h-11` (44 px) to the shared `.input` class, used by every text input, select and textarea, to match the buttons. Before, instructor inputs and selects were 41–42 px tall.
+- Re-measured the dashboard and editor at 375/768/1440 px in Chrome: all inputs, selects and buttons are now ≥ 44 px, with no horizontal scrolling. The header "Classroom Survey" link (28 px) is still below 44 px; I left it alone because I only asked about inputs.
+- CSV: Export CSV on the archived Fractions survey downloaded `C:\Users\mgebu\Downloads\test-survey-fractions-check-results-2026-11-05.csv` (708 bytes). Checked the file: UTF-8 BOM, header with the question texts, 3 rows matching the submissions, summary section.
+- QR: Download QR only shows for an active survey, so the agent duplicated the Fractions survey, activated the copy (slug `4wv66ttj`), downloaded `C:\Users\mgebu\Downloads\4wv66ttj-qr.png` (1024×1024 PNG), then closed and deleted the copy.
+- Updated `TESTING.md` rows 16 and 29 ("Partial (agent)") and row 30 (still partial because of the header link).
+
+**Files changed:** `src/index.css`, `TESTING.md`, `AI_HISTORY.md`.
+
+**Verification:** `npm run lint` 0 problems; `npm test -- --run` 112/112 passed; `npm run build` passed. Chrome measurement as above. No regression test was added: jsdom does not calculate layout, so it can't measure element heights. The Chrome measurement is the check.
+
+**Problems / open issues:**
+- Whether the QR PNG scans is not verified: there is no QR decoder on this PC (no OpenCV), and Chrome's BarcodeDetector is not available on Windows.
+- Still for me: open the CSV in Excel and Google Sheets, and scan the PNG with a phone.
+- Database is back to one survey: "Test Survey - Fractions Check", archived, 3 responses.
+
+---
+
+## Session 30 — 2026-11-05 — Header link tap target, commit
+
+**What I asked:** "fix the header link too, then commit and push"
+
+**What the agent did:**
+- `src/components/InstructorLayout.tsx`: the header "Classroom Survey" link now has `inline-flex min-h-11 items-center`, so its tap area is 44 px instead of 28 px. Ran Prettier on the two files changed in Sessions 29–30.
+- Re-measured the dashboard, editor and results pages at 375/768/1440 px in Chrome: no horizontal scrolling, and every visible tap target is ≥ 44 px. The skip link is 24 px when shown; it is for keyboard users only, so I left it.
+- `TESTING.md` row 30 is now "Pass (agent)". Checked off "Improve mobile responsiveness" in `TODO.md`.
+- Committed Sessions 29–30 and pushed to `origin/main`.
+
+**Files changed:** `src/components/InstructorLayout.tsx`, `src/index.css` (Session 29), `TESTING.md`, `TODO.md`, `AI_HISTORY.md`.
+
+**Verification:** `npm run lint` 0 problems; `npm test -- --run` 112/112 passed; `npm run build` passed; `prettier --check` clean on both changed files. Chrome measurement as above.
+
+**Problems / open issues:** `prettier --check` first flagged `InstructorLayout.tsx` because the new class string made the line too long; Prettier wrapped it. A check after `git stash` also flagged both files, but only because Git had rewritten their line endings, not because of the code. No regression test, same reason as Session 29.

@@ -192,7 +192,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 # Phase 13 — UI Polish
 
 - [x] Add consistent page layouts.
-- [ ] Improve mobile responsiveness.
+- [x] Improve mobile responsiveness.
 - [x] Add loading states.
 - [x] Add empty states.
 - [x] Add error messages.

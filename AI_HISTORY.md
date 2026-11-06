@@ -743,3 +743,67 @@ git push -u origin main
 **Verification:** `npm run lint` 0 problems; `npm test -- --run` 112/112 passed; `npm run build` passed; `prettier --check` clean on both changed files. Chrome measurement as above.
 
 **Problems / open issues:** `prettier --check` first flagged `InstructorLayout.tsx` because the new class string made the line too long; Prettier wrapped it. A check after `git stash` also flagged both files, but only because Git had rewritten their line endings, not because of the code. No regression test, same reason as Session 29.
+
+---
+
+## Session 31 — 2026-11-05 — First Cloudflare deploy failed: diagnosis
+
+**What I asked:** "the build failed" (pasted the Cloudflare build log)
+
+**What the agent found:**
+- The build itself succeeded: `npm run build` passed and the bundle matches a local build with `.env.local` (`index-*.js` 542 KB), with no "VITE_SUPABASE_* not set" warning, so the environment variables were set.
+- The failure came from the deploy step. The project was created as a **Cloudflare Workers** project, not a **Pages** project: the log shows `Executing user deploy command: npx wrangler deploy`, and Wrangler auto-generated a `wrangler.jsonc` inside the build container. Workers static assets reject `public/_redirects` (`/* /index.html 200`) with "Infinite loop detected in this rule" (code 100324). Cloudflare Pages accepts this file; it is the standard Pages SPA fallback.
+- Recommended fix: delete the Workers project and create a **Pages** project from the same repo (the spec, TODO Phase 15, README and DECISIONS all say Cloudflare Pages). No repo change needed.
+- Alternative, not taken: keep Workers, commit a `wrangler.jsonc` with `assets.not_found_handling: "single-page-application"` and remove `_redirects`. That would contradict the spec and need a DECISIONS entry.
+
+**Files changed:** `AI_HISTORY.md`.
+
+**Verification:** Local `npm run build` gives the same bundle sizes as the Cloudflare log.
+
+**Problems / open issues:** Waiting for me to recreate the project as Pages.
+
+---
+
+## Session 32 — 2026-11-05 — Production verification (Prompt 14, TODO Phase 15)
+
+**What I asked:** "its deployed at https://classroom-survey-cky.pages.dev/", then "logged in" (twice)
+
+**What the agent did:**
+- I recreated the project as a Cloudflare **Pages** project (see Session 31); it deployed to `https://classroom-survey-cky.pages.dev`.
+- curl: `/`, `/login`, `/dashboard` and `/s/doesnotexist` all return 200 HTML (the SPA fallback through `_redirects` works). The main bundle contains the Supabase project URL, and the "Missing Supabase configuration" branch was removed by the build, so the env vars are set. `VITE_PUBLIC_SITE_URL` is not set; QR links use `window.location.origin`, which is the production URL.
+- Chrome:
+  - Logged out, `/s/doesnotexist` → "Survey not found." and `/dashboard` → `/login`.
+  - I logged in myself; the agent does not type passwords into the live site.
+  - The agent duplicated the archived Fractions survey, renamed it "Production Test", saved and activated it. The Present page showed `https://classroom-survey-cky.pages.dev/s/93nb9237`.
+  - Logged out and submitted as a student (no Supabase session in local storage) → "Thank you!"; reopening the link → "already submitted".
+  - I logged in again; it returned to the results page: 1 response, all counts and percentages correct.
+- Filled `TESTING.md` row 35 ("Pass (agent)"). Checked off 9 Phase 15 items in `TODO.md` (Pages site, GitHub connection, env vars, deploy, SPA routing, production login, QR URL, production submissions, production results).
+- Screenshots: `production-present-qr.jpg`, `production-student-thank-you.jpg`, `production-results.jpg` in `C:\Users\mgebu\Downloads\survey-app-screenshots\`.
+
+**Files changed:** `TESTING.md`, `TODO.md`, `AI_HISTORY.md`.
+
+**Verification:** As above. No code changed.
+
+**Problems / open issues:**
+- "Production Test" is left **active** with 1 response so I can scan its QR with my phone (row 15). Close or archive it afterwards.
+- "Connect Cloudflare Pages to the GitHub repository" is checked on the basis that I set the project up as a Git import. The agent cannot see the Cloudflare dashboard; the deployed bundle matches a build of `main`.
+- Still for me: phone QR scan, a second browser, the projector, opening the CSV in Excel and Google Sheets, the Supabase SQL Editor and Table Editor screenshots, the Supabase Site URL setting, the `[MY REFLECTION]` / `[FILL IN]` parts of `DEVELOPMENT_SUMMARY.md`, and sending the grader login through HuskyCT.
+- Note: the first attempt to update `TESTING.md` row 35 failed and changed nothing. The file had Windows `\r\n` line endings from the earlier `git stash` round trip, so the row pattern did not match. It was rerun with a pattern that allows `\r`; `git diff` shows only row 35 changed.
+
+---
+
+## Session 33 — 2026-11-05 — Fill in DEVELOPMENT_SUMMARY.md facts, commit
+
+**What I asked:** "yes, fill in the summary then commit and push"
+
+**What the agent did:**
+- `DEVELOPMENT_SUMMARY.md` section 2: replaced the outdated "Done by me" list, which said I did the Supabase setup and all manual tests. It now separates what I did from the setup and testing the agent did at my request. Filled the `[FILL IN]` with dates and the things that behaved differently (Chrome window resize, tap-target fixes, Workers-vs-Pages, `.env.example` values).
+- Section 6: corrected the deployment paragraph (`VITE_PUBLIC_SITE_URL` is not set and isn't needed). Filled the `[FILL IN]` with the production URL, GitHub URL, deploy date and the Prompt 14 results.
+- Updated the draft note at the top. No `[FILL IN]` placeholders remain. The 5 `[MY REFLECTION]` placeholders are untouched; they need my own words.
+- Committed Sessions 32–33 (`TESTING.md`, `TODO.md`, `DEVELOPMENT_SUMMARY.md`, `AI_HISTORY.md`) and pushed to `origin/main`.
+
+**Files changed:** `DEVELOPMENT_SUMMARY.md`, `AI_HISTORY.md` (plus the Session 32 changes to `TESTING.md` and `TODO.md`).
+
+**Verification:** `grep` finds 0 `[FILL IN]` placeholders and 5 `[MY REFLECTION]` placeholders. Documentation only, so lint, tests and build were not re-run.
+
+**Problems / open issues:** The summary does not say the Supabase token was revoked, because I haven't confirmed that yet.

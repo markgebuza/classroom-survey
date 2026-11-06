@@ -49,7 +49,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 # Phase 3 — Instructor Authentication
 
 - [x] Create the instructor login page.
-- [ ] Connect login to Supabase Auth.
+- [x] Connect login to Supabase Auth.
 - [x] Add logout.
 - [x] Create an authentication context/provider.
 - [x] Create a protected-route component.
@@ -61,7 +61,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 # Phase 4 — Instructor Dashboard
 
 - [x] Create the dashboard layout.
-- [ ] Load surveys from Supabase.
+- [x] Load surveys from Supabase.
 - [x] Display survey title, status, and creation date.
 - [x] Add status badges for Draft, Active, Closed, and Archived.
 - [x] Add a New Survey button.
@@ -91,8 +91,8 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Delete questions.
 - [x] Delete choices.
 - [x] Validate required fields.
-- [ ] Save a survey as Draft.
-- [ ] Load an existing survey for editing.
+- [x] Save a survey as Draft.
+- [x] Load an existing survey for editing.
 - [x] Prevent editing an active survey unless it is first closed.
 
 ---
@@ -117,7 +117,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 - [x] Create the public route `/s/:surveyId`.
   > Implemented as `/s/:slug` (public slug, not the survey id) — see DECISIONS.md D1.
-- [ ] Load the requested active survey.
+- [x] Load the requested active survey.
 - [x] Show an error if the survey does not exist.
 - [x] Show a message if the survey is closed.
 - [x] Render survey title and description.
@@ -125,9 +125,9 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Render True / False questions.
 - [x] Validate required answers.
 - [x] Add Submit button.
-- [ ] Store response and answers in Supabase.
+- [x] Store response and answers in Supabase.
 - [x] Show a submission confirmation page.
-- [ ] Make the entire experience mobile friendly.
+- [x] Make the entire experience mobile friendly.
 
 ---
 
@@ -149,7 +149,7 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 - [x] Aggregate answers by question.
 - [x] Show counts for each choice.
 - [x] Show percentages for each choice.
-- [ ] Add bar charts using Recharts.
+- [x] Add bar charts using Recharts.
 - [x] Clearly label unanswered questions.
 - [x] Add Refresh Results button.
 - [x] Add link back to the main dashboard.
@@ -205,19 +205,19 @@ This roadmap breaks the implementation into small, testable phases ordered from 
 
 # Phase 14 — Testing
 
-- [ ] Test instructor login.
-- [ ] Test survey creation.
+- [x] Test instructor login.
+- [x] Test survey creation.
 - [ ] Test survey editing.
-- [ ] Test activation.
-- [ ] Test closing surveys.
+- [x] Test activation.
+- [x] Test closing surveys.
 - [ ] Test QR-code links.
-- [ ] Test student submissions.
-- [ ] Test duplicate-submission prevention.
+- [x] Test student submissions.
+- [x] Test duplicate-submission prevention.
 - [x] Test results calculations.
 - [x] Test CSV export.
 - [ ] Test mobile layout.
 - [ ] Test with at least two browsers.
-- [ ] Test unauthorized access attempts.
+- [x] Test unauthorized access attempts.
 - [x] Test database Row Level Security.
 
 ---

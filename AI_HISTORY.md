@@ -626,3 +626,52 @@ git push -u origin main
 **Verification:** My SQL Editor run: 23/23 PASS. `git status` was clean and matched `origin/main` after the push.
 
 **Problems / open issues:** None.
+
+---
+
+## Session 26 — 2026-11-05 — Local create/save test in Chrome (TESTING.md step 4)
+
+**What I asked:** "you do it in chrome"
+
+**What the agent did:**
+- Started `npm run dev` (port 5173) and logged in through `/login` in Chrome as the instructor (`mgebuza31@gmail.com`).
+- Created "Test Survey - Fractions Check" with 2 multiple-choice questions (3 choices each) and 1 true/false question, then clicked Save Draft. The page showed "Saved" and moved to `/surveys/<id>/edit`.
+- Reloaded the editor; every field came back the same.
+- Queried the database through the REST API as the instructor: 1 survey (`draft`), 3 questions (positions 1–3: MC, MC, T/F), 8 choices.
+- Saved a dashboard screenshot to `C:\Users\mgebu\Downloads\survey-app-screenshots\screenshot2-dashboard-draft.jpg` (outside the repo).
+- Filled in `TESTING.md` rows 1, 6, 7 and 10 as "Pass (agent)" and checked off in `TODO.md`: Connect login to Supabase Auth, Load surveys from Supabase, Save a survey as Draft, Load an existing survey for editing, Test instructor login, Test survey creation.
+
+**Files changed:** `TESTING.md`, `TODO.md`, `AI_HISTORY.md`.
+
+**Verification:** Browser flow and database query as described above. No code changed, so lint, tests and build were not re-run.
+
+**Problems / open issues:**
+- `TESTING.md` asks for Screenshot 2 of the Supabase Table Editor (`surveys`/`questions`/`choices`); I still need to take that.
+- The test survey stays in the database as a draft so it can be used for the activation and phone tests.
+
+---
+
+## Session 27 — 2026-11-05 — Step 5 browser tests in Chrome (TESTING.md section 3)
+
+**What I asked:** "do step 5 in chrome"
+
+**What the agent did:**
+- Instructor steps ran on `localhost:5173`. Student steps ran on `[::1]:5173`, which the browser treats as a separate site with no login, so the student requests went out as `anon`.
+- Activated the test survey (slug `3vaf37qh`), checked the active survey's editor is locked, submitted with a question blank (validation), then submitted 3 student responses with fresh browser tokens (Q1: 1/2, 1/2, 1/3).
+- Duplicate test: reopened the link, then deleted only `classroom-survey.submitted-surveys` and submitted again. The server rejected it.
+- Closed the survey while a student form was open; checked closed and unknown links; checked the results page numbers and charts.
+- Screen widths: loaded each page in a frame at 375/768/1440 px and measured horizontal scrolling and tap-target heights. Resizing the Chrome window had no effect, so this replaced it.
+- Keyboard: tab order and focus rings on the student page, arrow keys in radio groups, skip link, Escape and focus return in the close dialog.
+- Logged-out checks: protected-route redirects, wrong password, return to the page I asked for after login, logout.
+- Reactivated the survey for the layout test, then closed it again. Final state: closed, 3 responses.
+- Saved screenshots to `C:\Users\mgebu\Downloads\survey-app-screenshots\` (outside the repo).
+- Filled 15 rows in `TESTING.md` (14 "Pass (agent)", row 30 "Partial (agent)"). Checked off 9 `TODO.md` items: Phase 7 load active survey, store response, mobile friendly; Phase 9 bar charts; Phase 14 activation, closing, student submissions, duplicate prevention, unauthorized access.
+
+**Files changed:** `TESTING.md`, `TODO.md`, `AI_HISTORY.md`.
+
+**Verification:** Database check as the instructor: 3 responses, 3 distinct tokens, 3 answers each; survey status `closed`. No code changed, so lint, tests and build were not re-run.
+
+**Problems / open issues:**
+- Row 30 is only partial: instructor text inputs and selects are 41–42 px tall, and the header "Classroom Survey" link is 28 px, below the 44 px tap-target goal. Not fixed; that would be a small CSS change if I want it.
+- Not done (need me or my OK): real phone QR scan (15), QR download (16) and CSV export (29), because downloads need my approval; second browser (31); projector; rows 9, 11, 13 and 24–28.
+- "Test mobile layout" and "Test accessibility and keyboard navigation" are left unchecked in `TODO.md` because they need a real phone and the 44 px fix.

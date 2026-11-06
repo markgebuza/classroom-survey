@@ -47,9 +47,39 @@ describe('escapeCell (formula injection)', () => {
   })
 })
 
+describe('escapeCell (spreadsheet type guessing)', () => {
+  // Excel turns these into dates, numbers or booleans when it opens a CSV (1/2 became "2-Jan").
+  it.each([
+    ['1/2', '"=""1/2"""'],
+    ['3/4', '"=""3/4"""'],
+    ['75%', '"=""75%"""'],
+    ['007', '"=""007"""'],
+    ['1.50', '"=""1.50"""'],
+    ['1,000', '"=""1,000"""'],
+    ['2026-11-05', '"=""2026-11-05"""'],
+    ['10:30 AM', '"=""10:30 AM"""'],
+    ['$5', '"=""$5"""'],
+    ['True', '"=""True"""'],
+    ['false', '"=""false"""'],
+  ])('keeps %j as text', (input, expected) => {
+    expect(escapeCell(input)).toBe(expected)
+  })
+
+  it('leaves ordinary text, timestamps and real numbers alone', () => {
+    expect(escapeCell('1/2 cup')).toBe('1/2 cup')
+    expect(escapeCell('Red')).toBe('Red')
+    expect(escapeCell('2026-08-17T12:09:00.000Z')).toBe('2026-08-17T12:09:00.000Z')
+    expect(escapeCell(3)).toBe('3')
+  })
+
+  it('still applies the formula guard first', () => {
+    expect(escapeCell('-1')).toBe("'-1")
+  })
+})
+
 describe('toCsv', () => {
   it('joins rows with CRLF and ends with a line break', () => {
-    expect(toCsv([['a', 'b'], ['1', 'x,y'], []])).toBe('a,b\r\n1,"x,y"\r\n\r\n')
+    expect(toCsv([['a', 'b'], ['c', 'x,y'], []])).toBe('a,b\r\nc,"x,y"\r\n\r\n')
   })
 })
 
@@ -122,7 +152,7 @@ describe('buildResultsCsv', () => {
     const csv = buildResultsCsv(survey, responses, new Date('2026-08-18T08:00:00Z'))
     const lines = csv.split('\r\n')
     expect(lines[0]).toBe('response_id,submitted_at,First?,"Second, T/F"')
-    expect(lines[1]).toBe("r1,2026-08-17T12:09:00.000Z,'=danger,True")
+    expect(lines[1]).toBe('r1,2026-08-17T12:09:00.000Z,\'=danger,"=""True"""')
     expect(lines[2]).toBe('r2,2026-08-17T12:10:05.000Z,Plain,')
     expect(lines[3]).toBe('')
     expect(lines[4]).toBe('Survey summary')

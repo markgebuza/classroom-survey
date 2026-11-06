@@ -807,3 +807,46 @@ git push -u origin main
 **Verification:** `grep` finds 0 `[FILL IN]` placeholders and 5 `[MY REFLECTION]` placeholders. Documentation only, so lint, tests and build were not re-run.
 
 **Problems / open issues:** The summary does not say the Supabase token was revoked, because I haven't confirmed that yet.
+
+---
+
+## Session 34 — 2026-11-05 — Screenshots, Site URL, Excel check
+
+**What I asked:** "go, you can change the site URL and upload the CSV"
+
+**What the agent did:**
+- **Excel:** opened the exported CSV with Excel 16 from PowerShell (Excel stayed hidden) and read the cells. The layout, header, 3 response rows and summary are correct, but **Excel converts the answers "1/2" and "1/3" into the dates "2-Jan" and "3-Jan"**. "75%" becomes 0.75 (still shown as 75%) and "True" becomes TRUE. Not fixed yet; waiting for my decision. Root cause: the CSV writes answers as plain text, and Excel guesses the type of each cell when it opens a CSV.
+- **Screenshot 1:** pasted `supabase/tests/rls_checks.sql` into the Supabase SQL Editor in my logged-in Chrome and ran it. Supabase warned about destructive operations and new tables without RLS; both come from the script's temporary results tables, so it ran with "Run without RLS". Result: 23/23 PASS. Saved `screenshot1-rls-checks-rows-1-11.jpg` and `screenshot1-rls-checks-rows-12-23.jpg`. The query was not saved in Supabase.
+- **Screenshot 2:** Table Editor screenshots of `surveys` (2 rows), `questions` (6 rows) and `choices` (16 rows): `screenshot2-table-surveys.jpg`, `screenshot2-table-questions.jpg`, `screenshot2-table-choices.jpg`. All screenshots are in `C:\Users\mgebu\Downloads\survey-app-screenshots\`.
+- **Site URL:** changed Supabase Authentication → URL Configuration → Site URL from `http://localhost:3000` to `https://classroom-survey-cky.pages.dev`. After a reload it shows the new value.
+- **Google Sheets:** not done. Drive's upload and the Sheets Import → Upload box both use a file picker or Google frame that the browser tools can't reach. This left an empty "Untitled spreadsheet" in my Google Drive.
+- **Production Test:** left active. It still has 1 response, so my phone scan hasn't happened yet.
+- `TESTING.md` row 29 is now "Fail (agent)" because of the Excel date conversion.
+
+**Files changed:** `TESTING.md`, `AI_HISTORY.md`.
+
+**Verification:** rls_checks 23/23 PASS in the SQL Editor; Site URL shows the new value after reload; Excel cell values as listed above.
+
+**Problems / open issues:** Excel date conversion (needs a fix); Google Sheets check; the empty "Untitled spreadsheet" in my Drive; phone scan; closing "Production Test" afterwards.
+
+---
+
+## Session 35 — 2026-11-05 — Fix: Excel turns CSV answers like 1/2 into dates
+
+**What I asked:** "yes fix the csv bug, then commit and push"
+
+**Root cause:** `escapeCell` in `src/lib/csv.ts` already guarded against formula injection, but wrote answer text like `1/2` as a plain cell. When Excel opens a CSV it guesses each plain cell's type, so `1/2` became 2 January ("2-Jan"), `75%` became 0.75, and `True` became a TRUE/FALSE value.
+
+**What the agent did:**
+- Tests first: added a table-driven `escapeCell (spreadsheet type guessing)` group to `src/lib/csv.test.ts` (11 values that must stay text; ordinary text, ISO timestamps and real numbers left alone; formula guard still first). Updated the `buildResultsCsv` expectation for the "True" answer. Before the fix, 12 tests failed.
+- Fix: `escapeCell` now writes a text value matching `SPREADSHEET_COERCES` (numbers, fractions, percents, dates, times, currency, true/false) as `="text"`, then applies the usual RFC 4180 quoting. It only applies to string values, so counts stay numbers.
+- Two existing tests changed: in `src/test/results.test.tsx` the exported "False" answer is now `"=""False"""` (intended), and the `toCsv` CRLF test now uses `'c'` instead of the string `'1'` so it stays focused on line joining.
+- Checked in real Excel 16: generated a CSV with the fixed code and opened it hidden through COM. "1/2", "1/3", "75%", "True", "007", "2026-11-05" and "Café" are shown as typed (String), 3 stays a number (Double), and `=1+1` shows as `'=1+1`.
+- Added `DECISIONS.md` D23. Updated `TESTING.md` row 29 to "Partial (agent)" (Excel passes; Google Sheets not tested).
+- Committed Sessions 34–35 and pushed. Cloudflare redeploys from `main` automatically.
+
+**Files changed:** `src/lib/csv.ts`, `src/lib/csv.test.ts`, `src/test/results.test.tsx`, `DECISIONS.md`, `TESTING.md`, `AI_HISTORY.md`.
+
+**Verification:** `npm test -- --run` 125/125 passed (13 files; 112 before plus 13 new); `npm run lint` 0 problems; `npm run build` passed; `prettier --check` clean on the changed files; Excel check as above.
+
+**Problems / open issues:** Google Sheets still needs a manual check (File → Import → Upload the CSV). A plain-text reader will see `="1/2"` (accepted in D23). Month-name dates like "Jan 2" are not covered; unlikely in answer choices.

@@ -153,6 +153,12 @@ This file records choices where the five spec documents (`Classroom_Survey_Web_A
 - **Decision:** `scripts/rls-probe.ts` uses only the anon key. It first makes one call anon is allowed to make (`get_survey_status_by_slug`); if that fails (wrong URL/key, network, missing migrations) it stops with exit code 2. A "rejected" check only counts as PASS for Postgres `42501 permission denied` or zero returned rows — any other error is a FAIL. The double-submission check creates a real response, so it only runs with `--submit` (use a test survey).
 - **Reason:** The first version reported PASS when the server was unreachable, because "request failed" looked the same as "permission denied" (see AI_HISTORY.md Session 13).
 
+### D23. CSV cells that spreadsheets would convert
+- **Date:** 2026-11-05
+- **Decision:** In the CSV export, a text cell that Excel would turn into a date, number or boolean (for example `1/2`, `75%`, `007`, `2026-11-05`, `10:30 AM`, `True`) is written as `="1/2"`, so Excel and Google Sheets show it exactly as typed. Real numbers (`response_count`, `question_count`) stay numbers. The formula guard from D21 runs first, so `-1` is still written as `'-1`.
+- **Reason:** In Excel 16 the answers "1/2" and "1/3" opened as the dates "2-Jan" and "3-Jan" (found in Session 34), which corrupts math survey results.
+- **Alternatives:** A leading apostrophe (Excel shows it as part of the text in CSVs); a leading tab (adds invisible whitespace to the value); leaving it to the user to import with "Text" columns (easy to forget). A plain-text reader of the CSV will see `="1/2"` instead of `1/2`; this was accepted because the export is meant for spreadsheets.
+
 ---
 
 ## Part 2 — Database policies and functions in plain English (Prompt 3)

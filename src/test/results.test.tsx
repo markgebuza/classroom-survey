@@ -178,7 +178,7 @@ describe('ResultsPage', () => {
     expect(Array.from(bytes.slice(0, 3))).toEqual([0xef, 0xbb, 0xbf])
     const text = new TextDecoder().decode(bytes)
     expect(text).toContain(
-      'response_id,submitted_at,Café?\r\nr1,2026-08-17T12:09:00.000Z,False\r\n',
+      'response_id,submitted_at,Café?\r\nr1,2026-08-17T12:09:00.000Z,"=""False"""\r\n',
     )
     expect(URL.revokeObjectURL).toHaveBeenCalledWith('blob:csv')
   })

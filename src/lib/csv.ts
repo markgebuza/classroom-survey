@@ -8,14 +8,18 @@ export interface ExportResponse {
 
 const FORMULA_PREFIX = /^[=+\-@\t\r]/
 const NEEDS_QUOTES = /[",\r\n]|^\s|\s$/
+// Text Excel would turn into a date, number or boolean when opening a CSV (e.g. 1/2 -> 2-Jan).
+const SPREADSHEET_COERCES = /^(?:(?=.*\d)[$€£¥]?[\d.][\d\s.,:/%-]*(?:\s?[ap]\.?m\.?)?|true|false)$/i
 
 /**
  * One CSV cell: neutralises spreadsheet formulas (OWASP CSV injection: a leading = + - @, tab or
- * carriage return gets a ' prefix) and applies RFC 4180 quoting.
+ * carriage return gets a ' prefix), writes text that a spreadsheet would convert as ="text" so it
+ * is shown exactly as typed (DECISIONS.md D23), and applies RFC 4180 quoting.
  */
 export function escapeCell(value: string | number | null | undefined): string {
   let text = value === null || value === undefined ? '' : String(value)
   if (FORMULA_PREFIX.test(text)) text = `'${text}`
+  else if (typeof value === 'string' && SPREADSHEET_COERCES.test(text)) text = `="${text}"`
   return NEEDS_QUOTES.test(text) ? `"${text.replace(/"/g, '""')}"` : text
 }
 

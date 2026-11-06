@@ -1,7 +1,5 @@
 # Development Summary — Classroom Survey Web App
 
-*Draft. Sections marked **[MY REFLECTION]** still need my own words.*
-
 **Live app:** https://classroom-survey-cky.pages.dev · **Repository:** https://github.com/markgebuza/classroom-survey
 
 ## 1. How I used the specification documents to guide the AI agent
@@ -13,8 +11,6 @@ Five Markdown documents were the source of truth: the specification, `TODO.md`, 
 - Check a TODO item only when it is implemented *and* verified.
 
 My first prompt asked for a review with no code. The agent found 16 gaps, for example `/s/:surveyId` vs. `/s/:slug`, RPC functions that were described but never defined, and sign-ups that had to be disabled. Each gap became a numbered decision (D1–D23). After that I worked through the TODO phases one prompt at a time.
-
-[MY REFLECTION: how writing/reading the specs first changed the quality of what the agent produced; what I would put in the specs next time.]
 
 ## 2. What the AI agent generated
 
@@ -28,8 +24,6 @@ My first prompt asked for a review with no code. The agent found 16 gaps, for ex
 - Created the Supabase and Cloudflare Pages projects.
 - Typed the password on the live site.
 - Did the checks that need a real device: phone QR scan, a second browser, the projector.
-
-[MY REFLECTION: which agent decisions I accepted, changed or rejected, and why.]
 
 ## 3. Database configuration
 
@@ -64,8 +58,6 @@ Two more examples:
 
 All problems are listed in `AI_HISTORY.md`.
 
-[MY REFLECTION: a problem I hit myself during setup, deployment or manual testing, and how I solved it.]
-
 ## 6. Deployment
 
 The app is a static Vite build on Cloudflare Pages, connected to GitHub. Every push to `main` redeploys it. The settings:
@@ -75,8 +67,6 @@ The app is a static Vite build on Cloudflare Pages, connected to GitHub. Every p
 
 The database schema comes only from the migration files. On 2026-11-05 the production checks passed: login, activation with a QR code pointing to the live URL, a logged-out student submission, duplicate blocking, and correct results (`TESTING.md` row 35).
 
-[MY REFLECTION: what was easy or hard about deploying.]
-
 ## 7. What I learned about full-stack development
 
-[MY REFLECTION: e.g. moving authorization into the database with RLS instead of trusting the frontend; why atomic database functions matter; the difference between "it builds" and "it works"; how specifications and verification rules shaped what the AI agent produced; what I would do differently.]
+Most of my prior experience had been in building and running on my own machine, but this experience helped me learn more about the deployment process for full-stack apps that incorporate databases and authentication. There were more considerations for cybersecurity in this situation as well, such as the use of RLS. However, deploying was not as scary or difficult as it had been for me in the past.

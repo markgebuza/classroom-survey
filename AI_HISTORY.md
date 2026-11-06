@@ -850,3 +850,25 @@ git push -u origin main
 **Verification:** `npm test -- --run` 125/125 passed (13 files; 112 before plus 13 new); `npm run lint` 0 problems; `npm run build` passed; `prettier --check` clean on the changed files; Excel check as above.
 
 **Problems / open issues:** Google Sheets still needs a manual check (File → Import → Upload the CSV). A plain-text reader will see `="1/2"` (accepted in D23). Month-name dates like "Jan 2" are not covered; unlikely in answer choices.
+
+---
+
+## Session 36 — 2026-11-05 — Questions about the remaining checks and HuskyCT
+
+**What I asked:**
+1. "what do you mean by the second browser and projector checks"
+2. "how much of this requires unique entries in a submission"
+3. "what is submitted on huskyct"
+4. "commit and push the AI history"
+
+**What the agent did:**
+1. Explained `TESTING.md` row 31: repeat tests 1, 12, 17 and 23 in a non-Chromium browser (Firefox, or Safari on iPhone/Mac; Edge doesn't count because it uses the same engine as Chrome). Explained the projector check from `UI.md` ("readable from a projector") and the `TODO.md` item on QR presentation: Fullscreen Present page, viewed and scanned from about 5–8 m.
+2. Explained that duplicate protection allows one submission per browser per survey. The remaining checks need 2 submissions on "Production Test" (phone and Firefox); Chrome on my PC has already submitted to it. Answers don't need to differ.
+3. Searched the repo and Downloads for the survey assignment handout and didn't find it. From the repo: Deliverable C = `DEVELOPMENT_SUMMARY.md`, Deliverable D = `AI_HISTORY.md`, and grader credentials go through HuskyCT only (README). It guessed the other deliverables (GitHub repo, live URL) from the four-deliverable structure of `math_practice_assignment.md`, a different assignment in the same folder, and said this is not confirmed.
+4. Added this entry, committed and pushed.
+
+**Files changed:** `AI_HISTORY.md`.
+
+**Verification:** Documentation only.
+
+**Problems / open issues:** The exact HuskyCT deliverables for this assignment are unconfirmed. I need to check the assignment page.
